@@ -99,6 +99,7 @@ backgroundimage_example pic ( // the generated example. in this case, the image 
 	logic [9:0] drawxsig, drawysig, ballxsig, ballysig, ballsizesig;
 	logic [9:0] wallxsig, wallysig, wallsizesig;
 	logic [9:0] backxsig, backysig, backsizesig;
+	logic [9:0] wplayerxsig, wplayerysig, wplayersizesig;
 	logic [7:0] Red, Blue, Green;
 	//logic [7:0] Red1, Blue1, Green1;
 	
@@ -195,11 +196,11 @@ backgroundimage_example pic ( // the generated example. in this case, the image 
 //instantiate a vga_controller, ball, and color_mapper here with the ports.
 vga_controller vga(.Reset(Reset_h), .Clk(MAX10_CLK1_50), .hs(VGA_HS), .vs(VGA_VS),.pixel_clk(VGA_Clk), .blank(blank),.sync(sync), .DrawX(drawxsig), .DrawY(drawysig));
 
-color_mapper color(.BallX(ballxsig), .BallY(ballysig), .Ball_size(ballsizesig), .DrawX(drawxsig), .DrawY(drawysig),.WallX(wallxsig), .WallY(wallysig), .Wall_size(wallsizesig), .BackgX(backxsig), .BackgY(backysig), .Backg_size(backsizesig), .vga_clk(VGA_Clk), .blank(blank), .Red(Red), .Green(Green), .Blue(Blue));
+color_mapper color(.BallX(ballxsig), .BallY(ballysig), .Ball_size(ballsizesig), .DrawX(drawxsig), .DrawY(drawysig),.WallX(wallxsig), .WallY(wallysig), .Wall_size(wallsizesig), .BackgX(backxsig), .BackgY(backysig), .Backg_size(backsizesig), .WplayerX(wplayerxsig), .WplayerY(wplayerysig), .Wplayer_size(wplayersizesig) ,.vga_clk(VGA_Clk), .blank(blank), .Red(Red), .Green(Green), .Blue(Blue));
 
 //block block(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode), .BallX(wallxsig), .BallY(wallysig), .BallS(wallsizesig));
 
-ball inball1(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode), .BallX(ballxsig), .BallY(ballysig), .BallS(ballsizesig));
+ball inball1(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode), .BallX(wplayerxsig), .BallY(wplayerysig), .BallS(wplayersizesig));
 
 background backg(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode),.BallX(backxsig), .BallY(backysig), .BallS(backsizesig));
 

@@ -13,12 +13,13 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size,
+module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size, WplayerX, WplayerY, Wplayer_size,
 							  input         vga_clk, blank,
                        output logic [7:0]  Red, Green, Blue);
     
     logic ball_on; 
 	 logic wall_on;
+	 logic player_on;
 	 
  /* Old Ball: Generated square box by checking if the current pixel is within a square of length
     2*Ball_Size, centered at (BallX, BallY).  Note that this requires unsigned comparisons.
@@ -49,6 +50,11 @@ module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	 assign BDistY = DrawY - BackgY;
 	 assign BSize = Backg_size;
 	 
+	 int WPDistX, WPDistY, WPSize;
+	 assign WPDistX = DrawX - WplayerX;
+	 assign WPDistY = DrawY - WplayerY;
+	 assign WPSize = Wplayer_size;
+	 
 //-----------------------------------------------------------------------------------//
 //palette and rom instantiations
 //BaseBackground
@@ -73,16 +79,40 @@ backgroundimage_palette backgroundimage_palette (
 );
 
 //-------------------------------------------------------------------------------------//
+
+//-----------------------------------------------------------------------------------//
+//palette and rom instantiations
+//WhiteFacingPlayer
+
+logic [9:0] whiteplayer_rom_address;
+logic [3:0] whiteplayer_rom_q;
+logic [3:0] wp_palette_red, wp_palette_green, wp_palette_blue;
+
+assign whiteplayer_rom_address = ((DrawX - WplayerX) + (DrawY - WplayerY) * 32);
+
+whitefacingplayer_rom whitefacingplayer_rom (
+	.clock   (vga_clk),
+	.address (whiteplayer_rom_address),
+	.q       (whiteplayer_rom_q)
+);
+
+whitefacingplayer_palette whitefacingplayer_palette (
+	.index (whiteplayer_rom_q),
+	.red   (wp_palette_red),
+	.green (wp_palette_green),
+	.blue  (wp_palette_blue)
+);
+//-------------------------------------------------------------------------------------//
 	 
 
 	  
-    always_comb
-    begin:Ball_on_proc
-        if ( ( DistX*DistX + DistY*DistY) <= (Size * Size) ) 
-            ball_on = 1'b1;
-        else 
-            ball_on = 1'b0;
-     end
+//    always_comb
+//    begin:Ball_on_proc
+//        if ( ( DistX*DistX + DistY*DistY) <= (Size * Size) ) 
+//            ball_on = 1'b1;
+//        else 
+//            ball_on = 1'b0;
+//     end
 	 
 	/*always_comb
     begin:Wall_on_proc
@@ -91,6 +121,14 @@ backgroundimage_palette backgroundimage_palette (
         else 
             wall_on = 1'b0;
      end*/  
+	  
+//	 always_comb
+//    begin:wp_on_proc
+//        if ((WPDistX <= WPSize) && (WPDistX >= WPSize - 32) && (WPDistY <= WPSize) && (WPDistY >= WPSize - 32)) 
+//            player_on = 1'b1;
+//        else 
+//            player_on = 1'b0;
+//     end
        
     always_ff @ (posedge vga_clk)
     begin:RGB_Display
@@ -100,11 +138,12 @@ backgroundimage_palette backgroundimage_palette (
             Green <= bg_palette_green;
             Blue <= bg_palette_blue;
 				
-				if ((ball_on == 1'b1)) 
+//				if ((player_on == 1'b1)) 
+				if(WPDistX < WPSize && WPDistY < WPSize)
 					begin 	
-						Red <= 8'hff;
-						Green <= 8'h55;
-						Blue <= 8'h00;
+						Red <= wp_palette_red;
+						Green <= wp_palette_green;
+						Blue <= wp_palette_blue;
 					end 
 					
 				if ((wall_on == 1'b1)) 
