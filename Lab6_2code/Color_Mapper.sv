@@ -88,22 +88,31 @@ logic [9:0] whiteplayer_rom_address;
 logic [3:0] whiteplayer_rom_q;
 logic [3:0] wp_palette_red, wp_palette_green, wp_palette_blue;
 
-assign whiteplayer_rom_address = ((DrawX - WplayerX) + (DrawY - WplayerY) * 32);
+assign whiteplayer_rom_address = ((DrawX - WplayerX + 26) + (DrawY-WplayerY + 26) * 26);
 
-whitefacingplayer_rom whitefacingplayer_rom (
+whiteplayer3_rom whiteplayer2_rom (
 	.clock   (vga_clk),
 	.address (whiteplayer_rom_address),
 	.q       (whiteplayer_rom_q)
 );
 
-whitefacingplayer_palette whitefacingplayer_palette (
+whiteplayer3_palette whiteplayer2_palette (
 	.index (whiteplayer_rom_q),
 	.red   (wp_palette_red),
 	.green (wp_palette_green),
 	.blue  (wp_palette_blue)
 );
 //-------------------------------------------------------------------------------------//
-	 
+
+//---------------------------------------------------------------------------------------
+//palette and rom instantiations 
+//bomb
+//still need to find png of bomb and generate sv files with helper tools 
+
+
+
+
+//--------------------------------------------------------------------------------------- 
 
 	  
 //    always_comb
@@ -139,13 +148,19 @@ whitefacingplayer_palette whitefacingplayer_palette (
             Blue <= bg_palette_blue;
 				
 //				if ((player_on == 1'b1)) 
-				if(WPDistX < WPSize && WPDistY < WPSize)
+				if((WPDistX < 0) && (WPDistX > (-26)) && (WPDistY < 0) && (WPDistY > -26) && (wp_palette_red != 4'h4 && wp_palette_green != 4'h8 && wp_palette_blue != 4'h3))
 					begin 	
 						Red <= wp_palette_red;
 						Green <= wp_palette_green;
 						Blue <= wp_palette_blue;
 					end 
 					
+				/*if(bomb_on == 1'b1)
+					begin
+					Red <= bom_palette_red;
+					Green <=bom_palette_green;
+					Blue <= bom_palette_blue;
+					*/
 				if ((wall_on == 1'b1)) 
 					begin 
 						Red <= 8'h80; 

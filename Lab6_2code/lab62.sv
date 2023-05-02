@@ -64,28 +64,28 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 //logic vga_clk, blank;
 //logic [9:0] DrawX, DrawY;
 
-/*vga_controller vga ( // the provided VGA controller from Lab 6 and 7
-	.Clk       (MAX10_CLK1_50),
-	.Reset     (1'b0),
-	.hs        (VGA_HS),
-	.vs        (VGA_VS),
-	.pixel_clk (vga_clk),
-	.blank     (blank),
-	.sync      (),
-	.DrawX     (DrawX),
-	.DrawY     (DrawY)
-);
+//vga_controller vga ( // the provided VGA controller from Lab 6 and 7
+//	.Clk       (MAX10_CLK1_50),
+//	.Reset     (1'b0),
+//	.hs        (VGA_HS),
+//	.vs        (VGA_VS),
+//	.pixel_clk (vga_clk),
+//	.blank     (blank),
+//	.sync      (),
+//	.DrawX     (DrawX),
+//	.DrawY     (DrawY)
+//);
+//
+//whitefacingplayer_example pic ( // the generated example. in this case, the image was called "pic"
+//	.vga_clk (vga_clk),
+//	.DrawX   (DrawX), 
+//	.DrawY   (DrawY),
+//	.blank   (blank),
+//	.red     (VGA_R),
+//	.green   (VGA_G),
+//	.blue    (VGA_B)
+//);
 
-backgroundimage_example pic ( // the generated example. in this case, the image was called "pic"
-	.vga_clk (vga_clk),
-	.DrawX   (DrawX), 
-	.DrawY   (DrawY),
-	.blank   (blank),
-	.red     (VGA_R),
-	.green   (VGA_G),
-	.blue    (VGA_B)
-);
-*/
 
 
 //=======================================================
@@ -148,7 +148,7 @@ backgroundimage_example pic ( // the generated example. in this case, the image 
 	assign {Reset_h}=~ (KEY[0]);
 
 	//Our A/D converter is only 12 bit
-	assign VGA_R = Red[3:0];
+	assign VGA_R = Red[3:0];      
 	assign VGA_B = Blue[3:0];
 	assign VGA_G = Green[3:0];
 	

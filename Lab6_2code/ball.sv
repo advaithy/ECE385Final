@@ -19,12 +19,12 @@ module  ball ( input Reset, frame_clk,
     
     logic [64:0] Ball_X_Pos, Ball_X_Motion, Ball_Y_Pos, Ball_Y_Motion, Ball_Size;
 	 
-    parameter [9:0] Ball_X_Center=320;  // Center position on the X axis
-    parameter [9:0] Ball_Y_Center=240;  // Center position on the Y axis
-    parameter [9:0] Ball_X_Min=100;       // Leftmost point on the X axis
-    parameter [9:0] Ball_X_Max= 550;     // Rightmost point on the X axis
+    parameter [9:0] Ball_X_Center=340;  // Center position on the X axis
+    parameter [9:0] Ball_Y_Center=260;  // Center position on the Y axis
+    parameter [9:0] Ball_X_Min= 96;      // Leftmost point on the X axis
+    parameter [9:0] Ball_X_Max= 578;     // Rightmost point on the X axis
     parameter [9:0] Ball_Y_Min= 65;       // Topmost point on the Y axis
-    parameter [9:0] Ball_Y_Max=416;     // Bottommost point on the Y axis
+    parameter [9:0] Ball_Y_Max=443;     // Bottommost point on the Y axis
     parameter [9:0] Ball_X_Step=3;      // Step size on the X axis
     parameter [9:0] Ball_Y_Step=3;      // Step size on the Y axis
 	 logic upflag;
@@ -32,7 +32,7 @@ module  ball ( input Reset, frame_clk,
 	 logic rightflag;
 	 logic leftflag;
 
-    assign Ball_Size = 10;  // assigns the value 4 as a 10-digit binary number, ie "0000000100"
+    assign Ball_Size = 26;  // assigns the value 4 as a 10-digit binary number, ie "0000000100"
    
     always_ff @ (posedge Reset or posedge frame_clk )
     begin: Move_Ball

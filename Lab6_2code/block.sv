@@ -73,3 +73,44 @@ logic [64:0] Ball_X_Pos, Ball_Y_Pos, Ball_Size;
    
     assign BallS = Ball_Size;
 endmodule 
+
+
+/*
+module bomb(input Reset, frame_clk,
+					input [7:0] keycode,
+					input [64:0] playerX, playerY,
+               output [64:0]  BallX, BallY,
+					output Bomb_On);
+					
+	logic [64:0] Ball_X_Pos, Ball_Y_Pos;
+	 
+    parameter [9:0] Ball_X_Center=playerX;  // Center position on the X axis
+    parameter [9:0] Ball_Y_Center=playerY;  // Center position on the Y axis
+	 always_ff @ (posedge Reset or posedge frame_clk )
+    begin: Move_Ball
+        if (Reset)  // Asynchronous Reset
+        begin 
+				Ball_Y_Pos <= Ball_Y_Center;
+				Ball_X_Pos <= Ball_X_Center;
+        end
+		  else
+				begin
+				
+				case(keycode)
+				8'h44: begin //apparently this is the keycode for spacebar
+					Ball_X_Pos <= playerX;
+					Ball_Y_Pos <= playerY;
+					Bomb_On <= 1'b1;
+				default: begin
+					Bomb_On <= 1'b0;
+					Ball_X_Pos <= 0;
+					Ball_Y_Pos <= 0;
+				end
+	 end
+	 
+assign BallX = Ball_X_Pos;
+   
+assign BallY = Ball_Y_Pos;
+endmodule
+*/
+					

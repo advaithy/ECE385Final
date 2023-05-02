@@ -5149,7 +5149,7 @@ char* ConvUTF8ToStr(BYTE* utf8, BYTE length)
  800304c:	10c5883a 	add	r2,r2,r3
  8003050:	10800017 	ldw	r2,0(r2)
  8003054:	1000683a 	jmp	r2
- 8003058:	08003c00 	call	8003c0 <__reset-0x77ffc40>
+ 8003058:	08003c00 	call	8003c0 <__alt_mem_sdram-0x77ffc40>
  800305c:	08003d08 	cmpgei	zero,at,244
  8003060:	08003d08 	cmpgei	zero,at,244
  8003064:	08003c20 	cmpeqi	zero,at,240
@@ -13128,12 +13128,12 @@ char* ConvUTF8ToStr(BYTE* utf8, BYTE length)
  800aaa8:	0800b368 	cmpgeui	zero,at,717
  800aaac:	0800b368 	cmpgeui	zero,at,717
  800aab0:	0800af90 	cmplti	zero,at,702
- 800aab4:	0800afc0 	call	800afc <__reset-0x77ff504>
+ 800aab4:	0800afc0 	call	800afc <__alt_mem_sdram-0x77ff504>
  800aab8:	0800b368 	cmpgeui	zero,at,717
  800aabc:	0800b368 	cmpgeui	zero,at,717
  800aac0:	0800b368 	cmpgeui	zero,at,717
  800aac4:	0800b310 	cmplti	zero,at,716
- 800aac8:	0800afc0 	call	800afc <__reset-0x77ff504>
+ 800aac8:	0800afc0 	call	800afc <__alt_mem_sdram-0x77ff504>
  800aacc:	0800b368 	cmpgeui	zero,at,717
  800aad0:	0800b368 	cmpgeui	zero,at,717
  800aad4:	0800ae68 	cmpgeui	zero,at,697
@@ -22962,7 +22962,7 @@ alt_exception_cause_generated_bad_addr(alt_exception_cause cause)
  8012478:	d9400015 	stw	r5,0(sp)
  801247c:	d9800115 	stw	r6,4(sp)
  8012480:	d9c00215 	stw	r7,8(sp)
- 8012484:	00000000 	call	0 <__reset-0x8000000>
+ 8012484:	00000000 	call	0 <__alt_mem_sdram-0x8000000>
  8012488:	d9400017 	ldw	r5,0(sp)
  801248c:	d9800117 	ldw	r6,4(sp)
  8012490:	d9c00217 	ldw	r7,8(sp)
@@ -23046,7 +23046,7 @@ alt_exception_cause_generated_bad_addr(alt_exception_cause cause)
  80125c0:	10003226 	beq	r2,zero,801268c <__call_exitprocs+0x178>
  80125c4:	a009883a 	mov	r4,r20
  80125c8:	98800015 	stw	r2,0(r19)
- 80125cc:	00000000 	call	0 <__reset-0x8000000>
+ 80125cc:	00000000 	call	0 <__alt_mem_sdram-0x8000000>
  80125d0:	9d000017 	ldw	r20,0(r19)
  80125d4:	a03fe41e 	bne	r20,zero,8012568 <__alt_data_end+0xfc012568>
  80125d8:	dfc00a17 	ldw	ra,40(sp)

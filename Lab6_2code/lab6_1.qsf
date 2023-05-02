@@ -443,9 +443,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[34]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[35]
 set_global_assignment -name FLOW_ENABLE_POWER_ANALYZER ON
 set_global_assignment -name POWER_DEFAULT_INPUT_IO_TOGGLE_RATE "12.5 %"
-set_global_assignment -name SYSTEMVERILOG_FILE whitefacingplayer/whitefacingplayer_rom.sv
-set_global_assignment -name SYSTEMVERILOG_FILE whitefacingplayer/whitefacingplayer_palette.sv
-set_global_assignment -name SYSTEMVERILOG_FILE whitefacingplayer/whitefacingplayer_example.sv
+set_global_assignment -name SYSTEMVERILOG_FILE whiteplayer3/whiteplayer3_rom.sv
+set_global_assignment -name SYSTEMVERILOG_FILE whiteplayer3/whiteplayer3_palette.sv
+set_global_assignment -name SYSTEMVERILOG_FILE whiteplayer3/whiteplayer3_example.sv
 set_global_assignment -name SYSTEMVERILOG_FILE backgroundimage/backgroundimage_rom.sv
 set_global_assignment -name SYSTEMVERILOG_FILE backgroundimage/backgroundimage_palette.sv
 set_global_assignment -name SYSTEMVERILOG_FILE backgroundimage/backgroundimage_example.sv
