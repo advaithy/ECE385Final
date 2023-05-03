@@ -1,4 +1,4 @@
-17:15:23 **** Incremental Build of configuration Nios II for project usb_kb ****
+03:24:50 **** Incremental Build of configuration Nios II for project usb_kb ****
 make all 
 makefile:762: warning: overriding commands for target `obj/default/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
 makefile:759: warning: ignoring old commands for target `obj/default/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
@@ -7,5 +7,5 @@ C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-dir
 [BSP build complete]
 [usb_kb build complete]
 
-17:15:24 Build Finished (took 1s.410ms)
+03:24:51 Build Finished (took 1s.228ms)
 

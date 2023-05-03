@@ -100,6 +100,8 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 	logic [9:0] wallxsig, wallysig, wallsizesig;
 	logic [9:0] backxsig, backysig, backsizesig;
 	logic [9:0] wplayerxsig, wplayerysig, wplayersizesig;
+	logic [9:0] bombxsig, bombysig, bombsizesig;
+	logic bombon;
 	logic [7:0] Red, Blue, Green;
 	//logic [7:0] Red1, Blue1, Green1;
 	
@@ -196,13 +198,14 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 //instantiate a vga_controller, ball, and color_mapper here with the ports.
 vga_controller vga(.Reset(Reset_h), .Clk(MAX10_CLK1_50), .hs(VGA_HS), .vs(VGA_VS),.pixel_clk(VGA_Clk), .blank(blank),.sync(sync), .DrawX(drawxsig), .DrawY(drawysig));
 
-color_mapper color(.BallX(ballxsig), .BallY(ballysig), .Ball_size(ballsizesig), .DrawX(drawxsig), .DrawY(drawysig),.WallX(wallxsig), .WallY(wallysig), .Wall_size(wallsizesig), .BackgX(backxsig), .BackgY(backysig), .Backg_size(backsizesig), .WplayerX(wplayerxsig), .WplayerY(wplayerysig), .Wplayer_size(wplayersizesig) ,.vga_clk(VGA_Clk), .blank(blank), .Red(Red), .Green(Green), .Blue(Blue));
+color_mapper color(.BallX(ballxsig), .BallY(ballysig), .Ball_size(ballsizesig), .DrawX(drawxsig), .DrawY(drawysig),.WallX(wallxsig), .WallY(wallysig), .Wall_size(wallsizesig), .BackgX(backxsig), .BackgY(backysig), .Backg_size(backsizesig), .WplayerX(wplayerxsig), .WplayerY(wplayerysig), .Wplayer_size(wplayersizesig), .BombX(bombxsig), .BombY(bombysig),.vga_clk(VGA_Clk), .blank(blank), .Bomb_on(bombon) ,.Red(Red), .Green(Green), .Blue(Blue));
 
 //block block(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode), .BallX(wallxsig), .BallY(wallysig), .BallS(wallsizesig));
 
-ball inball1(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode), .BallX(wplayerxsig), .BallY(wplayerysig), .BallS(wplayersizesig));
+ball inball1(.Reset(Reset_h), .frame_clk(VGA_VS), .collisionclk(MAX10_CLK1_50), .keycode(keycode), .BallX(wplayerxsig), .BallY(wplayerysig), .BallS(wplayersizesig));
 
 background backg(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode),.BallX(backxsig), .BallY(backysig), .BallS(backsizesig));
 
+bomb bomb(.Reset(Reset_h), .frame_clk(VGA_VS), .keycode(keycode),.playerX(wplayerxsig), .playerY(wplayerysig),.BallX(bombxsig), .BallY(bombysig),.Bomb_On(bombon));
 //backgroundimage_example backgroundimage_example(.DrawX(drawxsig), .DrawY(drawysig), .vga_clk(VGA_Clk), .blank(blank), .red(Red), .green(Green), .blue(Blue)); 
 endmodule

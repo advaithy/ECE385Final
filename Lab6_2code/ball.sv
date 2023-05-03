@@ -13,7 +13,7 @@
 //-------------------------------------------------------------------------
 
 
-module  ball ( input Reset, frame_clk,
+module  ball ( input Reset, frame_clk, collisionclk,
 					input [7:0] keycode,
                output [64:0]  BallX, BallY, BallS );
     
@@ -21,16 +21,17 @@ module  ball ( input Reset, frame_clk,
 	 
     parameter [9:0] Ball_X_Center=340;  // Center position on the X axis
     parameter [9:0] Ball_Y_Center=260;  // Center position on the Y axis
-    parameter [9:0] Ball_X_Min= 96;      // Leftmost point on the X axis
-    parameter [9:0] Ball_X_Max= 578;     // Rightmost point on the X axis
-    parameter [9:0] Ball_Y_Min= 65;       // Topmost point on the Y axis
-    parameter [9:0] Ball_Y_Max=443;     // Bottommost point on the Y axis
+    parameter [9:0] Ball_X_Min= 80;      // Leftmost point on the X axis
+    parameter [9:0] Ball_X_Max= 585;     // Rightmost point on the X axis
+    parameter [9:0] Ball_Y_Min= 40;       // Topmost point on the Y axis
+    parameter [9:0] Ball_Y_Max=460;     // Bottommost point on the Y axis
     parameter [9:0] Ball_X_Step=3;      // Step size on the X axis
     parameter [9:0] Ball_Y_Step=3;      // Step size on the Y axis
 	 logic upflag;
 	 logic downflag;
 	 logic rightflag;
 	 logic leftflag;
+	 logic [1:0] Balldirection;
 
     assign Ball_Size = 26;  // assigns the value 4 as a 10-digit binary number, ie "0000000100"
    
@@ -46,36 +47,27 @@ module  ball ( input Reset, frame_clk,
            
         else 
         begin 
-				 if ( (Ball_Y_Pos + Ball_Size) >= Ball_Y_Max )  // Ball is at the bottom edge, BOUNCE!
-					  //Ball_Y_Motion <= (~ (Ball_Y_Step) + 1'b1);  // 2's complement.
-					  //Ball_Y_Motion <= 0;
+				 if ( ((Ball_Y_Pos + Ball_Size) >= Ball_Y_Max) /*&& (ballcollsig == 0)*/)  // Ball is at the bottom edge, BOUNCE!
 					  downflag = 1;
 					  
-				 else if ( (Ball_Y_Pos - Ball_Size) <= Ball_Y_Min )  // Ball is at the top edge, BOUNCE!
-					  //Ball_Y_Motion <= Ball_Y_Step;
+				 else if ( (Ball_Y_Pos - Ball_Size) <= Ball_Y_Min /*&& (ballcollsig == 0)*/)  // Ball is at the top edge, BOUNCE!
 					  upflag = 1;
 					  
-				  else if ( (Ball_X_Pos + Ball_Size) >= Ball_X_Max )  // Ball is at the Right edge, BOUNCE!
-					  //Ball_X_Motion <= (~ (Ball_X_Step) + 1'b1);  // 2's complement.
-					  //Ball_X_Motion <= 0;
+				  else if ( (Ball_X_Pos + Ball_Size) >= Ball_X_Max /*&& (ballcollsig == 0)*/)  // Ball is at the Right edge, BOUNCE!
 					  rightflag = 1;
 					  
-				 else if ( (Ball_X_Pos - Ball_Size) <= Ball_X_Min )  // Ball is at the Left edge, BOUNCE!
-					  //Ball_X_Motion <= Ball_X_Step;
+				 else if ( (Ball_X_Pos - Ball_Size) <= Ball_X_Min /*&& (ballcollsig == 0)*/)  // Ball is at the Left edge, BOUNCE!
 					  leftflag = 1;
 					  
-				 //else 
-					  //Ball_Y_Motion <= Ball_Y_Motion;  // Ball is somewhere in the middle, don't bounce, just keep moving
-					
-			
 				 case (keycode)
 					8'h04 : begin
 							  if (!leftflag)
 								begin
 									Ball_Y_Motion <= 0;//A
-									Ball_X_Motion <= -1;
+									Ball_X_Motion <= -2;
 									Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion);  // Update ball position
 									Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion);
+									Balldirection = 2'b01;
 								end
 							  else
 								begin
@@ -87,9 +79,10 @@ module  ball ( input Reset, frame_clk,
 							  if (!rightflag)
 								begin
 									Ball_Y_Motion <= 0;//D
-									Ball_X_Motion <= 1;
+									Ball_X_Motion <= 2;
 									Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion);  // Update ball position
 									Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion);
+									//Balldirection;
 								end
 							  else
 								begin
@@ -101,10 +94,11 @@ module  ball ( input Reset, frame_clk,
 					8'h16 : begin
 							  if (!downflag)
 								begin
-									Ball_Y_Motion <= 1;//S
+									Ball_Y_Motion <= 2;//S
 									Ball_X_Motion <= 0;
 									Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion);  // Update ball position
 									Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion);
+									Balldirection = 2'b10;
 								end
 							  else
 								begin
@@ -115,10 +109,11 @@ module  ball ( input Reset, frame_clk,
 					8'h1A : begin
 							  if (!upflag)
 								begin
-									Ball_Y_Motion <= -1;//W
+									Ball_Y_Motion <= -2;//W
 									Ball_X_Motion <= 0;
 									Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion);  // Update ball position
 									Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion);
+									Balldirection = 2'b00;
 								end
 							  else
 								begin
@@ -126,10 +121,7 @@ module  ball ( input Reset, frame_clk,
 								end
 							 end	  
 					default: ;
-			   endcase
-				 
-				 //Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion);  // Update ball position
-				 //Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion);		
+			   endcase	
 	  /**************************************************************************************
 	    ATTENTION! Please answer the following quesiton in your lab report! Points will be allocated for the answers!
 		 Hidden Question #2/2:
@@ -148,6 +140,51 @@ module  ball ( input Reset, frame_clk,
     assign BallY = Ball_Y_Pos;
    
     assign BallS = Ball_Size;
-    
-
+	 
+	 
+//	 logic [16:0] corner1mapaddress, corner2mapaddress, corner3mapaddress, corner4mapaddress, mapaddress1, mapaddress2;
+//	 logic collisionsig1, collisionsig2;
+//	 logic ballcollsig;
+//	 
+//	 //corner1          corner2
+//	 //corner3          corner4
+//	 
+//	 assign corner1mapaddress = (((BallX * 1) / 2) + ((BallY * 1) / 2) * 320);
+//	 assign corner2mapaddress = ((((BallX + 32) * 1) / 2) + ((BallY * 1) / 2) * 320);
+//	 assign corner3mapaddress = (((BallX * 1) / 2) + (((BallY + 32) * 1) / 2) * 320);	
+//	 assign corner4mapaddress = (((BallX + 32) * 1) / 2) + ((((BallY + 32) * 1) / 2) * 320);
+//	 
+//	 always_comb begin
+//	 if (Balldirection == 2'b00) //up direction
+//		begin
+//			mapaddress1 = corner1mapaddress;
+//			mapaddress2 = corner2mapaddress;
+//		end
+//	 else if (Balldirection == 2'b01) //left direction
+//		begin
+//			mapaddress1 = corner1mapaddress;
+//			mapaddress2 = corner3mapaddress;
+//		end
+//	 else if (Balldirection == 2'b10) //down direction
+//		begin
+//			mapaddress1 = corner3mapaddress;
+//			mapaddress2 = corner4mapaddress;
+//		end
+//	 else //right direction
+//		begin
+//			mapaddress1 = corner2mapaddress;
+//			mapaddress2 = corner4mapaddress;
+//		end
+//	end
+//	
+//	finalmapedit_rom collisions1(.clock(collisionclk), .address(mapaddress1), .q(collisionsig1));
+//	finalmapedit_rom collisions2(.clock(collisionclk), .address(mapaddress2), .q(collisionsig2));
+//
+//	always_comb begin
+//	if(collisionsig1 || collisionsig2)
+//		ballcollsig = 1;
+//	else 
+//		ballcollsig = 0;
+//	end
+	
 endmodule

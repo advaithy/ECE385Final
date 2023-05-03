@@ -13,14 +13,16 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size, WplayerX, WplayerY, Wplayer_size,
-							  input         vga_clk, blank,
+module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size, WplayerX, WplayerY, Wplayer_size,BombX, BombY, Bomb_size,
+							  input         vga_clk, blank, 
+							  input 			 Bomb_on,
                        output logic [7:0]  Red, Green, Blue);
     
     logic ball_on; 
 	 logic wall_on;
 	 logic player_on;
 	 
+	 logic bomb1_on;
  /* Old Ball: Generated square box by checking if the current pixel is within a square of length
     2*Ball_Size, centered at (BallX, BallY).  Note that this requires unsigned comparisons.
 	 
@@ -55,28 +57,53 @@ module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	 assign WPDistY = DrawY - WplayerY;
 	 assign WPSize = Wplayer_size;
 	 
+	 int BombDistX, BombDistY, BombSize;
+	 assign BombDistX = DrawX - BombX;
+	 assign BombDistY = DrawY - BombY;
+	 assign BombSize = Bomb_size;
+	 
 //-----------------------------------------------------------------------------------//
 //palette and rom instantiations
 //BaseBackground
 
-logic [18:0] basebackground_rom_address;
-logic [3:0] basebackground_rom_q;
-logic [3:0] bg_palette_red, bg_palette_green, bg_palette_blue;
+logic [18:0] collisionbg_rom_address;
+logic [3:0] collisionbg_rom_q;
+logic [3:0] collisionbg_palette_red, collisionbg_palette_green, collisionbg_palette_blue;
 
-assign basebackground_rom_address = (DrawX) + (DrawY) * 640;
+//
+//logic [18:0] basebackground_rom_address;
+//logic [3:0] basebackground_rom_q;
+//logic [3:0] bg_palette_red, bg_palette_green, bg_palette_blue;
 
-backgroundimage_rom backgroundimage_rom (
+assign collisionbg_rom_address = (DrawX) + (DrawY) * 640;
+//
+//assign basebackground_rom_address = (DrawX) + (DrawY) * 640;
+//
+collisionbg_rom collisionbg_rom (
 	.clock   (vga_clk),
-	.address (basebackground_rom_address),
-	.q       (basebackground_rom_q)
+	.address (collisionbg_rom_address),
+	.q       (collisionbg_rom_q)
 );
 
-backgroundimage_palette backgroundimage_palette (
-	.index (basebackground_rom_q),
-	.red   (bg_palette_red),
-	.green (bg_palette_green),
-	.blue  (bg_palette_blue)
+collisionbg_palette collisionbg_palette (
+	.index (collisionbg_rom_q),
+	.red   (collisionbg_palette_red),
+	.green (collisionbg_palette_green),
+	.blue  (collisionbg_palette_blue)
 );
+
+//backgroundimage_rom backgroundimage_rom (
+//	.clock   (vga_clk),
+//	.address (basebackground_rom_address),
+//	.q       (basebackground_rom_q)
+//);
+//
+//backgroundimage_palette backgroundimage_palette (
+//	.index (basebackground_rom_q),
+//	.red   (bg_palette_red),
+//	.green (bg_palette_green),
+//	.blue  (bg_palette_blue)
+//);
 
 //-------------------------------------------------------------------------------------//
 
@@ -109,6 +136,24 @@ whiteplayer3_palette whiteplayer2_palette (
 //bomb
 //still need to find png of bomb and generate sv files with helper tools 
 
+logic [9:0] bomb_rom_address;
+logic [3:0] bomb_rom_q;
+logic [3:0] bomb_palette_red, bomb_palette_green, bomb_palette_blue;
+
+assign bomb_rom_address = ((DrawX - BombX + 26) + (DrawY-BombY + 26) * 26);
+
+bomb_rom bomb_rom (
+	.clock   (vga_clk),
+	.address (bomb_rom_address),
+	.q       (bomb_rom_q)
+);
+
+bomb_palette bomb_palette (
+	.index (bomb_rom_q),
+	.red   (bomb_palette_red),
+	.green (bomb_palette_green),
+	.blue  (bomb_palette_blue)
+);
 
 
 
@@ -138,16 +183,30 @@ whiteplayer3_palette whiteplayer2_palette (
 //        else 
 //            player_on = 1'b0;
 //     end
+
+always 
        
     always_ff @ (posedge vga_clk)
     begin:RGB_Display
 	 	  if (blank) 
 			begin
-            Red <= bg_palette_red; 
-            Green <= bg_palette_green;
-            Blue <= bg_palette_blue;
+            Red <= collisionbg_palette_red; 
+            Green <= collisionbg_palette_green;
+            Blue <= collisionbg_palette_blue;
+
+//            Red <= bg_palette_red; 
+//            Green <= bg_palette_green;
+//            Blue <= bg_palette_blue;
 				
 //				if ((player_on == 1'b1)) 
+
+				if(Bomb_on == 1'b1 && ((BombDistX < 0) && (BombDistX > (-26)) && (BombDistY < 0) && (BombDistY > -26)))
+					begin
+					Red <= bomb_palette_red;
+					Green <=bomb_palette_green;
+					Blue <= bomb_palette_blue;
+					end
+					
 				if((WPDistX < 0) && (WPDistX > (-26)) && (WPDistY < 0) && (WPDistY > -26) && (wp_palette_red != 4'h4 && wp_palette_green != 4'h8 && wp_palette_blue != 4'h3))
 					begin 	
 						Red <= wp_palette_red;
@@ -155,12 +214,7 @@ whiteplayer3_palette whiteplayer2_palette (
 						Blue <= wp_palette_blue;
 					end 
 					
-				/*if(bomb_on == 1'b1)
-					begin
-					Red <= bom_palette_red;
-					Green <=bom_palette_green;
-					Blue <= bom_palette_blue;
-					*/
+					
 				if ((wall_on == 1'b1)) 
 					begin 
 						Red <= 8'h80; 
