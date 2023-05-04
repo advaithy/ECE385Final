@@ -1,11 +1,9 @@
 	lab62soc u0 (
-		.clk_clk                        (<connected-to-clk_clk>),                        //                     clk.clk
 		.hex_digits_export              (<connected-to-hex_digits_export>),              //              hex_digits.export
 		.key_external_connection_export (<connected-to-key_external_connection_export>), // key_external_connection.export
 		.keycode_export                 (<connected-to-keycode_export>),                 //                 keycode.export
+		.led_wire_export                (<connected-to-led_wire_export>),                //                led_wire.export
 		.leds_export                    (<connected-to-leds_export>),                    //                    leds.export
-		.reset_reset_n                  (<connected-to-reset_reset_n>),                  //                   reset.reset_n
-		.sdram_clk_clk                  (<connected-to-sdram_clk_clk>),                  //               sdram_clk.clk
 		.sdram_wire_addr                (<connected-to-sdram_wire_addr>),                //              sdram_wire.addr
 		.sdram_wire_ba                  (<connected-to-sdram_wire_ba>),                  //                        .ba
 		.sdram_wire_cas_n               (<connected-to-sdram_wire_cas_n>),               //                        .cas_n
@@ -21,6 +19,9 @@
 		.spi0_SS_n                      (<connected-to-spi0_SS_n>),                      //                        .SS_n
 		.usb_gpx_export                 (<connected-to-usb_gpx_export>),                 //                 usb_gpx.export
 		.usb_irq_export                 (<connected-to-usb_irq_export>),                 //                 usb_irq.export
-		.usb_rst_export                 (<connected-to-usb_rst_export>)                  //                 usb_rst.export
+		.usb_rst_export                 (<connected-to-usb_rst_export>),                 //                 usb_rst.export
+		.clk_clk                        (<connected-to-clk_clk>),                        //                     clk.clk
+		.reset_reset_n                  (<connected-to-reset_reset_n>),                  //                   reset.reset_n
+		.sdram_clk_clk                  (<connected-to-sdram_clk_clk>)                   //               sdram_clk.clk
 	);
 

@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>May 3, 2023 3:24:49 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1683098689212</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>May 4, 2023 2:02:51 AM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1683180171279</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\david\Documents\ECE385Labs\ECE385Final\Lab6_2code\software\usb_kb_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\lab62soc.sopcinfo</SopcDesignFile>
@@ -898,6 +898,12 @@
                 <Enabled>false</Enabled>
                 <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         </Setting>
+        <MemoryMap>
+                <slaveDescriptor>led</slaveDescriptor>
+                <addressRange>0x00000070 - 0x0000007F</addressRange>
+                <addressSpan>16</addressSpan>
+                <attributes/>
+        </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
                 <addressRange>0x00000080 - 0x000000BF</addressRange>

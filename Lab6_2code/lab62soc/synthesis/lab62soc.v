@@ -8,6 +8,7 @@ module lab62soc (
 		output wire [15:0] hex_digits_export,              //              hex_digits.export
 		input  wire [1:0]  key_external_connection_export, // key_external_connection.export
 		output wire [7:0]  keycode_export,                 //                 keycode.export
+		output wire [7:0]  led_wire_export,                //                led_wire.export
 		output wire [13:0] leds_export,                    //                    leds.export
 		input  wire        reset_reset_n,                  //                   reset.reset_n
 		output wire        sdram_clk_clk,                  //               sdram_clk.clk
@@ -104,6 +105,11 @@ module lab62soc (
 	wire   [3:0] mm_interconnect_0_timer_0_s1_address;                        // mm_interconnect_0:timer_0_s1_address -> timer_0:address
 	wire         mm_interconnect_0_timer_0_s1_write;                          // mm_interconnect_0:timer_0_s1_write -> timer_0:write_n
 	wire  [15:0] mm_interconnect_0_timer_0_s1_writedata;                      // mm_interconnect_0:timer_0_s1_writedata -> timer_0:writedata
+	wire         mm_interconnect_0_led_s1_chipselect;                         // mm_interconnect_0:led_s1_chipselect -> led:chipselect
+	wire  [31:0] mm_interconnect_0_led_s1_readdata;                           // led:readdata -> mm_interconnect_0:led_s1_readdata
+	wire   [1:0] mm_interconnect_0_led_s1_address;                            // mm_interconnect_0:led_s1_address -> led:address
+	wire         mm_interconnect_0_led_s1_write;                              // mm_interconnect_0:led_s1_write -> led:write_n
+	wire  [31:0] mm_interconnect_0_led_s1_writedata;                          // mm_interconnect_0:led_s1_writedata -> led:writedata
 	wire         mm_interconnect_0_spi0_spi_control_port_chipselect;          // mm_interconnect_0:spi0_spi_control_port_chipselect -> spi0:spi_select
 	wire  [15:0] mm_interconnect_0_spi0_spi_control_port_readdata;            // spi0:data_to_cpu -> mm_interconnect_0:spi0_spi_control_port_readdata
 	wire   [2:0] mm_interconnect_0_spi0_spi_control_port_address;             // mm_interconnect_0:spi0_spi_control_port_address -> spi0:mem_addr
@@ -114,7 +120,7 @@ module lab62soc (
 	wire         irq_mapper_receiver1_irq;                                    // timer_0:irq -> irq_mapper:receiver1_irq
 	wire         irq_mapper_receiver2_irq;                                    // spi0:irq -> irq_mapper:receiver2_irq
 	wire  [31:0] nios2_gen2_0_irq_irq;                                        // irq_mapper:sender_irq -> nios2_gen2_0:irq
-	wire         rst_controller_reset_out_reset;                              // rst_controller:reset_out -> [hex_digits:reset_n, irq_mapper:reset, jtag_uart_0:rst_n, key_external_connection:reset_n, keycode:reset_n, leds:reset_n, mm_interconnect_0:nios2_gen2_0_reset_reset_bridge_in_reset_reset, nios2_gen2_0:reset_n, rst_translator:in_reset, sdram_pll:reset, spi0:reset_n, sysid_qsys_0:reset_n, timer_0:reset_n, usb_gpx:reset_n, usb_irq:reset_n, usb_rst:reset_n]
+	wire         rst_controller_reset_out_reset;                              // rst_controller:reset_out -> [hex_digits:reset_n, irq_mapper:reset, jtag_uart_0:rst_n, key_external_connection:reset_n, keycode:reset_n, led:reset_n, leds:reset_n, mm_interconnect_0:nios2_gen2_0_reset_reset_bridge_in_reset_reset, nios2_gen2_0:reset_n, rst_translator:in_reset, sdram_pll:reset, spi0:reset_n, sysid_qsys_0:reset_n, timer_0:reset_n, usb_gpx:reset_n, usb_irq:reset_n, usb_rst:reset_n]
 	wire         rst_controller_reset_out_reset_req;                          // rst_controller:reset_req -> [nios2_gen2_0:reset_req, rst_translator:reset_req_in]
 	wire         nios2_gen2_0_debug_reset_request_reset;                      // nios2_gen2_0:debug_reset_request -> [rst_controller:reset_in1, rst_controller_001:reset_in1]
 	wire         rst_controller_001_reset_out_reset;                          // rst_controller_001:reset_out -> [mm_interconnect_0:sdram_reset_reset_bridge_in_reset_reset, sdram:reset_n]
@@ -160,6 +166,17 @@ module lab62soc (
 		.chipselect (mm_interconnect_0_keycode_s1_chipselect), //                    .chipselect
 		.readdata   (mm_interconnect_0_keycode_s1_readdata),   //                    .readdata
 		.out_port   (keycode_export)                           // external_connection.export
+	);
+
+	lab62soc_keycode led (
+		.clk        (clk_clk),                             //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),     //               reset.reset_n
+		.address    (mm_interconnect_0_led_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_0_led_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_0_led_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_0_led_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_0_led_s1_readdata),   //                    .readdata
+		.out_port   (led_wire_export)                      // external_connection.export
 	);
 
 	lab62soc_leds leds (
@@ -349,6 +366,11 @@ module lab62soc (
 		.keycode_s1_readdata                            (mm_interconnect_0_keycode_s1_readdata),                       //                                         .readdata
 		.keycode_s1_writedata                           (mm_interconnect_0_keycode_s1_writedata),                      //                                         .writedata
 		.keycode_s1_chipselect                          (mm_interconnect_0_keycode_s1_chipselect),                     //                                         .chipselect
+		.led_s1_address                                 (mm_interconnect_0_led_s1_address),                            //                                   led_s1.address
+		.led_s1_write                                   (mm_interconnect_0_led_s1_write),                              //                                         .write
+		.led_s1_readdata                                (mm_interconnect_0_led_s1_readdata),                           //                                         .readdata
+		.led_s1_writedata                               (mm_interconnect_0_led_s1_writedata),                          //                                         .writedata
+		.led_s1_chipselect                              (mm_interconnect_0_led_s1_chipselect),                         //                                         .chipselect
 		.leds_s1_address                                (mm_interconnect_0_leds_s1_address),                           //                                  leds_s1.address
 		.leds_s1_write                                  (mm_interconnect_0_leds_s1_write),                             //                                         .write
 		.leds_s1_readdata                               (mm_interconnect_0_leds_s1_readdata),                          //                                         .readdata

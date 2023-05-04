@@ -13,16 +13,16 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size, WplayerX, WplayerY, Wplayer_size,BombX, BombY, Bomb_size,
+module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size, WallX, WallY, Wall_size, BackgX, BackgY, Backg_size, WplayerX, WplayerY, Wplayer_size,BombX, BombY, Bomb_size, firelinehorizontalX, firelinehorizontalY,
 							  input         vga_clk, blank, 
-							  input 			 Bomb_on,
+							  input 			 Bomb_on, fireon,
                        output logic [7:0]  Red, Green, Blue);
     
     logic ball_on; 
 	 logic wall_on;
 	 logic player_on;
 	 
-	 logic bomb1_on;
+	 
  /* Old Ball: Generated square box by checking if the current pixel is within a square of length
     2*Ball_Size, centered at (BallX, BallY).  Note that this requires unsigned comparisons.
 	 
@@ -61,6 +61,11 @@ module  color_mapper ( input        [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	 assign BombDistX = DrawX - BombX;
 	 assign BombDistY = DrawY - BombY;
 	 assign BombSize = Bomb_size;
+	 
+	 int hfDistX, hfDistY, hfSize;
+	 assign hfDistX = DrawX - firelinehorizontalX;
+	 assign hfDistY = DrawY - firelinehorizontalY;
+	 //assign hfSize = firelinehorizontalsize;
 	 
 //-----------------------------------------------------------------------------------//
 //palette and rom instantiations
@@ -155,6 +160,29 @@ bomb_palette bomb_palette (
 	.blue  (bomb_palette_blue)
 );
 
+//---------------------------------------------------------------------------------------
+//palette and rom instantiations 
+//horizontalfire
+//still need to find png of horizontalfire and generate sv files with helper tools 
+
+logic [11:0] firelinehorizontal_rom_address;
+logic [1:0] firelinehorizontal_rom_q;
+logic [3:0] firelinehorizontal_palette_red, firelinehorizontal_palette_green, firelinehorizontal_palette_blue;
+
+assign firelinehorizontal_rom_address = ((DrawX - firelinehorizontalX + 104)) + (((DrawY - firelinehorizontalY) - 26) * 104);
+
+firelinehorizontal_rom firelinehorizontal_rom (
+	.clock   (vga_clk),
+	.address (firelinehorizontal_rom_address),
+	.q       (firelinehorizontal_rom_q)
+);
+
+firelinehorizontal_palette firelinehorizontal_palette (
+	.index (firelinehorizontal_rom_q),
+	.red   (firelinehorizontal_palette_red),
+	.green (firelinehorizontal_palette_green),
+	.blue  (firelinehorizontal_palette_blue)
+);
 
 
 //--------------------------------------------------------------------------------------- 
@@ -183,8 +211,6 @@ bomb_palette bomb_palette (
 //        else 
 //            player_on = 1'b0;
 //     end
-
-always 
        
     always_ff @ (posedge vga_clk)
     begin:RGB_Display
@@ -200,11 +226,19 @@ always
 				
 //				if ((player_on == 1'b1)) 
 
+				
 				if(Bomb_on == 1'b1 && ((BombDistX < 0) && (BombDistX > (-26)) && (BombDistY < 0) && (BombDistY > -26)))
 					begin
 					Red <= bomb_palette_red;
 					Green <=bomb_palette_green;
 					Blue <= bomb_palette_blue;
+					end
+					
+				if(fireon == 1'b1 && ((hfDistX < 0) && (hfDistX > (-13)) && (hfDistY < -16) && (hfDistY > -46)))
+					begin
+					Red <= firelinehorizontal_palette_red;
+					Green <=firelinehorizontal_palette_green;
+					Blue <= firelinehorizontal_palette_blue;
 					end
 					
 				if((WPDistX < 0) && (WPDistX > (-26)) && (WPDistY < 0) && (WPDistY > -26) && (wp_palette_red != 4'h4 && wp_palette_green != 4'h8 && wp_palette_blue != 4'h3))
@@ -213,14 +247,8 @@ always
 						Green <= wp_palette_green;
 						Blue <= wp_palette_blue;
 					end 
-					
-					
-				if ((wall_on == 1'b1)) 
-					begin 
-						Red <= 8'h80; 
-						Green <= 8'h80;
-						Blue <= 8'h80;
-					end
+			
+
 			end 
 		  else
 		  begin

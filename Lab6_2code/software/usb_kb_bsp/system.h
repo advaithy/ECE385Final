@@ -4,7 +4,7 @@
  * Machine generated for CPU 'nios2_gen2_0' in SOPC Builder design 'lab62soc'
  * SOPC Builder design path: ../../lab62soc.sopcinfo
  *
- * Generated: Tue May 02 23:50:42 EDT 2023
+ * Generated: Wed May 03 23:11:04 EDT 2023
  */
 
 /*
@@ -290,6 +290,33 @@
 
 
 /*
+ * led configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_led altera_avalon_pio
+#define LED_BASE 0x70
+#define LED_BIT_CLEARING_EDGE_REGISTER 0
+#define LED_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define LED_CAPTURE 0
+#define LED_DATA_WIDTH 8
+#define LED_DO_TEST_BENCH_WIRING 0
+#define LED_DRIVEN_SIM_VALUE 0
+#define LED_EDGE_TYPE "NONE"
+#define LED_FREQ 50000000
+#define LED_HAS_IN 0
+#define LED_HAS_OUT 1
+#define LED_HAS_TRI 0
+#define LED_IRQ -1
+#define LED_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define LED_IRQ_TYPE "NONE"
+#define LED_NAME "/dev/led"
+#define LED_RESET_VALUE 0
+#define LED_SPAN 16
+#define LED_TYPE "altera_avalon_pio"
+
+
+/*
  * leds configuration
  *
  */
@@ -412,7 +439,7 @@
 #define SYSID_QSYS_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYSID_QSYS_0_NAME "/dev/sysid_qsys_0"
 #define SYSID_QSYS_0_SPAN 8
-#define SYSID_QSYS_0_TIMESTAMP 1683085770
+#define SYSID_QSYS_0_TIMESTAMP 1683169534
 #define SYSID_QSYS_0_TYPE "altera_avalon_sysid_qsys"
 
 
